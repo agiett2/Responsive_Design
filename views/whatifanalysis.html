@@ -1,0 +1,38 @@
+<div id="analysis">
+    <div id="vertical" >
+        <p>{{chartLeftHeading}}</p>
+    </div>
+    <div id="header">
+        <p>{{chartTopHeading}}</p>
+    </div>
+    <div  class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+        <table  class="table ">
+            <thead>
+                <tr>
+                    <th colspan="2"></th>
+                    <th class="ng-cloak" ng-repeat="header in tableBodyData.headerRow ">{{header | percentage:2}}</th>
+                </tr>
+            </thead>
+            <tbody class="tableBody">
+                <tr class="firstRow">
+                    <td ng-cloak ng-repeat="data in tableBodyData.firstRow" class="active">{{data | number}}</td>
+                </tr>
+                <tr class="secondRow">
+                    <td ng-repeat="data in tableBodyData.secondRow">{{data}}</td>
+                </tr>
+                <tr class="thirdRow">
+                    <td ng-repeat="data in tableBodyData.thirdRow">{{data}}</td>
+                </tr>
+                <tr class="forthRow">
+                    <td ng-repeat="data in tableBodyData.forthRow">{{data}}</td>
+                </tr>
+                <tr class="fithRow">
+                    <td ng-repeat="data in tableBodyData.fithRow">{{data}}</td>
+                </tr>
+                <tr>
+                    <td ng-repeat="data in tableBodyData.sixthRow">{{data}}</td>
+                </tr>
+        </table>
+    </div>
+    <p id="btn"><a class="btn btn-lg btn-primary" type="button" data-toggle="modal" ng-click="SendData(tableBodyData.forthRow[4])" data-target="#myModal" href="#" role="button">Save Data</a></p></div>
+<modal></modal>
