@@ -1,4 +1,50 @@
 'use strict';
+app.directive('whatIfAnalysis', function(){
+    return{
+        controller: ($scope, $http, $timeout)=>{
+            $scope.chartLeftHeading = "Total Cost DC ($/Watt)";
+            $scope.chartTopHeading = "1st Year kWH Production (Efficency Factor)";
+            
+            /*Ajax call to post data to live service http://httpbin.org/post. if posted, modal will show successful message else will show error */
+            $scope.SendData = (tabledata)=>{
+                $scope.tabledata = null;
+                $scope.showSuccess = false;
+                $scope.showError = false;
+                $scope.loading = true;
+                let dataObject = {tabledata:tabledata};
+                
+                //To test that this function works, change or remove the url address to a none valid one. An error message should display in modal 
+                $http.post('http://httpbin.org/post', JSON.stringify(dataObject)).then(successHandler, errorHandler );
+            }
+            
+             var successHandler = (response)=>{
+                    if(response.data)
+                        //set a timeout of 1 seconds to wait to show the result if the data was saved or not. 
+                        $timeout(()=>{
+                            $scope.loading = false;
+                            $scope.showSuccess = true;
+                            $scope.msg = "Data Saved Successfully!";
+                        }, 2000);
+                }
+                
+                var errorHandler = (response)=>{
+                    
+                    $timeout(()=>{
+                        $scope.showError = true;
+                        $scope.msg = "Data Was Not Saved!";
+                        $scope.statusval = response.status;
+                        $scope.statustext = response.statusText;
+                        $scope.headers = response.headers();
+                    }, 1000);
+                }
+        },
+        transclude: true,
+        restrict: 'E',
+        templateUrl: 'Views/whatifanalysis.html',
+        scope: { tableBodyData: "=localdata"}
+    }
+});
+
 app.directive('modal', function(){
     return {
         require: "^whatIfAnalysis",
@@ -36,46 +82,3 @@ app.directive('layout', function(){
     }
 });
 
-app.directive('whatIfAnalysis', function(){
-    return{
-        controller: ($scope, $http, $timeout)=>{
-            $scope.chartLeftHeading = "Total Cost DC ($/Watt)";
-            $scope.chartTopHeading = "1st Year kWH Production (Efficency Factor)";
-            
-            /*Ajax call to post data to live service http://httpbin.org/post. if posted, modal will show successful message else will show error */
-            $scope.SendData = (tabledata)=>{
-                $scope.tabledata = null;
-                $scope.showSuccess = false;
-                $scope.showError = false;
-                $scope.loading = true;
-                let dataObject = {tabledata:tabledata};
-                //To test that this function works, change or remove the url address to a none valid one. An error message should display in modal 
-                $http.post('http://httpbin.org/post', JSON.stringify(dataObject)).then((response)=>{
-                    
-                    if(response.data)
-                        //set a timeout of 1 seconds to wait to show the result if the data was saved or not. 
-                        $timeout(()=>{
-                            $scope.loading = false;
-                            $scope.showSuccess = true;
-                            $scope.msg = "Data Saved Successfully!";
-                        }, 2000);
-                }, (response)=>{
-                    
-                    $timeout(()=>{
-                        $scope.showError = true;
-                        $scope.msg = "Data Was Not Saved!";
-                        $scope.statusval = response.status;
-                        $scope.statustext = response.statusText;
-                        $scope.headers = response.headers();
-                    }, 1000);
-                }).finally(()=>{
-                    
-                });
-            }
-        },
-        transclude: true,
-        restrict: 'E',
-        templateUrl: 'Views/whatifanalysis.html',
-        scope: { tableBodyData: "=localdata"}
-    }
-});
