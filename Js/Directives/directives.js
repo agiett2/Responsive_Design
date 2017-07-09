@@ -47,16 +47,20 @@ app.directive('whatIfAnalysis', function(){
                 $scope.tabledata = null;
                 $scope.showSuccess = false;
                 $scope.showError = false;
+                $scope.loading = true;
                 let dataObject = {tabledata:tabledata};
                 //To test that this function works, change or remove the url address to a none valid one. An error message should display in modal 
                 $http.post('http://httpbin.org/post', JSON.stringify(dataObject)).then((response)=>{
+                    
                     if(response.data)
                         //set a timeout of 1 seconds to wait to show the result if the data was saved or not. 
                         $timeout(()=>{
+                            $scope.loading = false;
                             $scope.showSuccess = true;
                             $scope.msg = "Data Saved Successfully!";
-                        }, 1000);
+                        }, 2000);
                 }, (response)=>{
+                    
                     $timeout(()=>{
                         $scope.showError = true;
                         $scope.msg = "Data Was Not Saved!";
@@ -64,6 +68,8 @@ app.directive('whatIfAnalysis', function(){
                         $scope.statustext = response.statusText;
                         $scope.headers = response.headers();
                     }, 1000);
+                }).finally(()=>{
+                    
                 });
             }
         },
